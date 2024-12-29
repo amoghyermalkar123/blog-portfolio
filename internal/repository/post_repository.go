@@ -337,3 +337,176 @@ func (r *PostRepository) getPostTags(ctx context.Context, postID int64) ([]model
 
 	return tags, nil
 }
+
+// internal/repository/post_repository.go
+
+// BeginTx starts a new transaction
+func (r *PostRepository) BeginTx(ctx context.Context) (*sql.Tx, error) {
+	return r.db.BeginTx(ctx, nil)
+}
+
+// GetPostByID retrieves a post by its ID
+func (r *PostRepository) GetPostByID(ctx context.Context, id int64) (*models.Post, error) {
+	post := &models.Post{}
+	query := `
+        SELECT id, title, slug, content, description, cover_image, 
+               published, created_at, updated_at, published_at
+        FROM posts
+        WHERE id = ?`
+
+	var publishedAt sql.NullTime
+	err := r.db.QueryRowContext(ctx, query, id).Scan(
+		&post.ID,
+		&post.Title,
+		&post.Slug,
+		&post.Content,
+		&post.Description,
+		&post.CoverImage,
+		&post.Published,
+		&post.CreatedAt,
+		&post.UpdatedAt,
+		&publishedAt,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	if publishedAt.Valid {
+		post.PublishedAt = &publishedAt.Time
+	}
+
+	// Get tags
+	post.Tags, err = r.getPostTags(ctx, post.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return post, nil
+}
+
+// ListTags returns all available tags
+func (r *PostRepository) ListTags(ctx context.Context) ([]models.Tag, error) {
+	query := `
+        SELECT id, name, slug, created_at
+        FROM tags
+        ORDER BY name`
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tags []models.Tag
+	for rows.Next() {
+		var tag models.Tag
+		err := rows.Scan(&tag.ID, &tag.Name, &tag.Slug, &tag.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+
+	return tags, nil
+}
+
+// CreatePostTx creates a new post within a transaction
+func (r *PostRepository) CreatePostTx(ctx context.Context, tx *sql.Tx, post *models.Post) error {
+	query := `
+        INSERT INTO posts (title, slug, content, description, cover_image, published, published_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        RETURNING id, created_at, updated_at`
+
+	var publishedAt sql.NullTime
+	if post.PublishedAt != nil {
+		publishedAt.Time = *post.PublishedAt
+		publishedAt.Valid = true
+	}
+
+	err := tx.QueryRowContext(
+		ctx,
+		query,
+		post.Title,
+		post.Slug,
+		post.Content,
+		post.Description,
+		post.CoverImage,
+		post.Published,
+		publishedAt,
+	).Scan(&post.ID, &post.CreatedAt, &post.UpdatedAt)
+
+	return err
+}
+
+// UpdatePostTx updates an existing post within a transaction
+func (r *PostRepository) UpdatePostTx(ctx context.Context, tx *sql.Tx, post *models.Post) error {
+	query := `
+        UPDATE posts 
+        SET title = ?, content = ?, description = ?, 
+            cover_image = ?, published = ?, published_at = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?`
+
+	var publishedAt sql.NullTime
+	if post.PublishedAt != nil {
+		publishedAt.Time = *post.PublishedAt
+		publishedAt.Valid = true
+	}
+
+	result, err := tx.ExecContext(
+		ctx,
+		query,
+		post.Title,
+		post.Content,
+		post.Description,
+		post.CoverImage,
+		post.Published,
+		publishedAt,
+		post.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}
+
+// SetPostTagsTx updates a post's tags within a transaction
+func (r *PostRepository) SetPostTagsTx(ctx context.Context, tx *sql.Tx, postID int64, tagIDs []int64) error {
+	// First, remove all existing tag associations
+	_, err := tx.ExecContext(ctx, "DELETE FROM post_tags WHERE post_id = ?", postID)
+	if err != nil {
+		return err
+	}
+
+	// Then add new tag associations
+	if len(tagIDs) > 0 {
+		query := "INSERT INTO post_tags (post_id, tag_id) VALUES "
+		var values []interface{}
+		placeholders := make([]string, 0, len(tagIDs))
+
+		for _, tagID := range tagIDs {
+			placeholders = append(placeholders, "(?, ?)")
+			values = append(values, postID, tagID)
+		}
+
+		query += strings.Join(placeholders, ", ")
+		_, err = tx.ExecContext(ctx, query, values...)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

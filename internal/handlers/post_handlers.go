@@ -137,7 +137,7 @@ func (h *PostHandlers) CreatePost() http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		if err := h.service.CreatePost(ctx, &post); err != nil {
+		if err := h.service.CreatePost(ctx, &post, []int64{}); err != nil {
 			h.logger.Error("Error creating post:", err)
 			http.Error(w, "Failed to create post", http.StatusInternalServerError)
 			return
@@ -174,7 +174,7 @@ func (h *PostHandlers) UpdatePost() http.HandlerFunc {
 		post.ID = id
 
 		ctx := r.Context()
-		if err := h.service.UpdatePost(ctx, &post); err != nil {
+		if err := h.service.UpdatePost(ctx, &post, []int64{}); err != nil {
 			h.logger.Error("Error updating post:", err)
 			http.Error(w, "Failed to update post", http.StatusInternalServerError)
 			return

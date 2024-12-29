@@ -18,7 +18,7 @@ func NewPostService(repo *repository.PostRepository) *PostService {
 }
 
 // CreatePost creates a new blog post
-func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
+func (s *PostService) CreatePost(ctx context.Context, post *models.Post, tagIds []int64) error {
 	// Generate slug if not provided
 	if post.Slug == "" {
 		post.Slug = generateSlug(post.Title)
@@ -44,7 +44,7 @@ func (s *PostService) ListPosts(ctx context.Context, filter models.PostFilter) (
 }
 
 // UpdatePost updates an existing post
-func (s *PostService) UpdatePost(ctx context.Context, post *models.Post) error {
+func (s *PostService) UpdatePost(ctx context.Context, post *models.Post, tagIds []int64) error {
 	// Update published time if post is being published
 	if post.Published && post.PublishedAt == nil {
 		now := time.Now()
@@ -85,3 +85,21 @@ func generateSlug(title string) string {
 
 	return slug
 }
+
+// internal/service/post_service.go
+
+// GetPostByID retrieves a post by its ID
+func (s *PostService) GetPostByID(ctx context.Context, id int64) (*models.Post, error) {
+	return s.repo.GetPostByID(ctx, id)
+}
+
+// ListTags returns all available tags
+func (s *PostService) ListTags(ctx context.Context) ([]models.Tag, error) {
+	return s.repo.ListTags(ctx)
+}
+
+// CreatePost creates a new post with tags
+
+// UpdatePost updates an existing post and its tags
+
+// generateSlug creates a URL-friendly version of the title

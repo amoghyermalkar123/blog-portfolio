@@ -96,17 +96,15 @@ func (router *Router) setupRoutes() {
 
 		// Admin routes
 		r.Route("/admin", func(r chi.Router) {
-			// Add authentication middleware
 			// r.Use(custommw.RequireAuth)
 
 			// Dashboard
 			r.Get("/dashboard", router.handlers.Admin().ShowDashboard())
-			// Posts management
+
+			// Post Management
 			r.Route("/posts", func(r chi.Router) {
 				r.Get("/", router.handlers.Admin().ShowPosts())
-				r.Post("/post/", router.handlers.Posts().CreatePost())
-				r.Put("/post/{id}", router.handlers.Posts().UpdatePost())
-				r.Delete("/post/{id}", router.handlers.Posts().DeletePost())
+				r.Get("/new/", router.handlers.Admin().ShowCreatePost())
 			})
 		})
 	})
