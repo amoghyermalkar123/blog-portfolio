@@ -193,7 +193,9 @@ func (h *AdminHandlers) HandleCreatePost() http.HandlerFunc {
 
 		// Get action (draft or publish)
 		action := r.FormValue("action")
-		published := action == "publish"
+		published := action == "publish" // This is correct but let's add logging
+
+		h.logger.Info("Post action:", action, "Published:", published) // Add logging
 
 		// Get selected tag IDs
 		var tagIDs []int64
@@ -205,7 +207,7 @@ func (h *AdminHandlers) HandleCreatePost() http.HandlerFunc {
 			tagIDs = append(tagIDs, id)
 		}
 
-		// Create post
+		// Create post with proper publishing status
 		post := &models.Post{
 			Title:       r.FormValue("title"),
 			Content:     r.FormValue("content"),
@@ -214,6 +216,7 @@ func (h *AdminHandlers) HandleCreatePost() http.HandlerFunc {
 			Published:   published,
 		}
 
+		// Set published date if being published
 		if published {
 			now := time.Now()
 			post.PublishedAt = &now

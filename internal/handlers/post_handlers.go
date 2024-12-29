@@ -26,6 +26,8 @@ func NewPostHandlers(service *service.PostService, logger *logger.Logger) *PostH
 }
 
 // ListPosts handles the blog listing page
+// internal/handlers/post_handlers.go
+
 func (h *PostHandlers) ListPosts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -40,12 +42,14 @@ func (h *PostHandlers) ListPosts() http.HandlerFunc {
 		// Set up pagination
 		limit := 10
 		offset := (page - 1) * limit
+
+		// Important: Set published filter to true for public blog page
 		published := true
 
 		// Create filter
 		filter := models.PostFilter{
 			Tag:       tag,
-			Published: &published,
+			Published: &published, // Make sure we're passing the address of published
 			Limit:     limit,
 			Offset:    offset,
 		}
@@ -61,26 +65,21 @@ func (h *PostHandlers) ListPosts() http.HandlerFunc {
 		// Handle different response types
 		switch {
 		case r.Header.Get("HX-Request") == "true":
-			// HTMX request - return partial template
 			err = pages.BlogPostList(posts).Render(ctx, w)
-			if err != nil {
-				h.logger.Error("Error rendering post list:", err)
-				http.Error(w, "Error rendering posts", http.StatusInternalServerError)
-			}
 		case r.Header.Get("Accept") == "application/json":
-			// API request - return JSON
 			w.Header().Set("Content-Type", "application/json")
 			if err := json.NewEncoder(w).Encode(posts); err != nil {
 				h.logger.Error("Error encoding posts:", err)
 				http.Error(w, "Error encoding response", http.StatusInternalServerError)
 			}
+			return
 		default:
-			// Regular request - return full page
 			err = pages.Blog(posts, page, tag).Render(ctx, w)
-			if err != nil {
-				h.logger.Error("Error rendering blog page:", err)
-				http.Error(w, "Error rendering page", http.StatusInternalServerError)
-			}
+		}
+
+		if err != nil {
+			h.logger.Error("Error rendering blog page:", err)
+			http.Error(w, "Error rendering page", http.StatusInternalServerError)
 		}
 	}
 }

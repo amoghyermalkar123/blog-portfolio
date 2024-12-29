@@ -131,14 +131,17 @@ func (r *PostRepository) GetPost(ctx context.Context, slug string) (*models.Post
 }
 
 // ListPosts returns a list of posts based on the filter
+// internal/repository/post_repository.go
+
 func (r *PostRepository) ListPosts(ctx context.Context, filter models.PostFilter) ([]*models.Post, error) {
 	query := strings.Builder{}
 	query.WriteString(`
         SELECT DISTINCT
-            p.id, p.title, p.slug, p.description, 
+            p.id, p.title, p.slug, p.content, p.description, 
             p.cover_image, p.published, p.created_at, 
             p.updated_at, p.published_at
-        FROM posts p`)
+        FROM posts p
+    `)
 
 	args := []interface{}{}
 	where := []string{}
@@ -146,11 +149,13 @@ func (r *PostRepository) ListPosts(ctx context.Context, filter models.PostFilter
 	if filter.Tag != "" {
 		query.WriteString(` 
             LEFT JOIN post_tags pt ON p.id = pt.post_id 
-            LEFT JOIN tags t ON pt.tag_id = t.id`)
+            LEFT JOIN tags t ON pt.tag_id = t.id
+        `)
 		where = append(where, "t.slug = ?")
 		args = append(args, filter.Tag)
 	}
 
+	// Important: Add published filter condition
 	if filter.Published != nil {
 		where = append(where, "p.published = ?")
 		args = append(args, *filter.Published)
@@ -160,7 +165,8 @@ func (r *PostRepository) ListPosts(ctx context.Context, filter models.PostFilter
 		query.WriteString(" WHERE " + strings.Join(where, " AND "))
 	}
 
-	query.WriteString(" ORDER BY p.created_at DESC")
+	// Order by published date for published posts, creation date for drafts
+	query.WriteString(" ORDER BY CASE WHEN p.published = 1 THEN p.published_at ELSE p.created_at END DESC")
 
 	if filter.Limit > 0 {
 		query.WriteString(" LIMIT ?")
@@ -185,6 +191,7 @@ func (r *PostRepository) ListPosts(ctx context.Context, filter models.PostFilter
 			&post.ID,
 			&post.Title,
 			&post.Slug,
+			&post.Content,
 			&post.Description,
 			&post.CoverImage,
 			&post.Published,
@@ -198,12 +205,6 @@ func (r *PostRepository) ListPosts(ctx context.Context, filter models.PostFilter
 
 		if publishedAt.Valid {
 			post.PublishedAt = &publishedAt.Time
-		}
-
-		// Get tags for each post
-		post.Tags, err = r.getPostTags(ctx, post.ID)
-		if err != nil {
-			return nil, err
 		}
 
 		posts = append(posts, post)
