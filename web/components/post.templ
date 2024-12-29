@@ -1,0 +1,45 @@
+// web/components/post.templ
+package components
+
+import "blog-portfolio/internal/models"
+
+templ PostPreview(post *models.Post) {
+<article class="bg-white dark:bg-neutral-800 rounded-lg shadow-sm p-6">
+  <header class="mb-4">
+    <div class="flex items-center justify-between">
+      <time datetime={ post.PublishedAt.Format("2006-01-02") } class="text-sm text-neutral-600 dark:text-neutral-400">
+        { post.PublishedAt.Format("January 2, 2006") }
+      </time>
+      if len(post.Tags) > 0 {
+      <div class="flex flex-wrap gap-2">
+        for _, tag := range post.Tags {
+        @Tag(tag)
+        }
+      </div>
+      }
+    </div>
+    <h2 class="mt-2 text-2xl font-bold text-neutral-900 dark:text-white">
+      <a href={ templ.SafeURL("/blog/" + post.Slug) } class="hover:text-primary-600 dark:hover:text-primary-400">
+        { post.Title }
+      </a>
+    </h2>
+  </header>
+  <p class="text-neutral-600 dark:text-neutral-400 mb-4">
+    { post.Description }
+  </p>
+  <footer>
+    <a href={ templ.SafeURL("/blog/" + post.Slug) }
+      class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 font-medium">
+      Read more →
+    </a>
+  </footer>
+</article>
+}
+
+templ Tag(tag models.Tag) {
+<a href={ templ.SafeURL("/blog?tag=" + tag.Slug) }
+		class=" inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800
+  dark:bg-primary-800 dark:text-primary-100 hover:bg-primary-200 dark:hover:bg-primary-700 transition-colors">
+  { tag.Name }
+</a>
+}

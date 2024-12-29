@@ -1,0 +1,12 @@
+{
+  "server": {
+    "port": "8080",
+    "environment": "development",
+    "allow_origins": "*"
+  },
+  "app": {
+    "title": "My Blog & Portfolio",
+    "description": "Personal blog and portfolio website",
+    "base_url": "http://localhost:8080"
+  }
+}
