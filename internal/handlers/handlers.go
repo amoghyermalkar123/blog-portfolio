@@ -3,7 +3,9 @@ package handlers
 
 import (
 	"blog-portfolio/internal/logger"
+	"blog-portfolio/internal/middleware"
 	"blog-portfolio/internal/service"
+	"blog-portfolio/web/layouts"
 	"blog-portfolio/web/pages"
 	"net/http"
 )
@@ -43,7 +45,13 @@ func (h *Handlers) Admin() *AdminHandlers {
 // Home handles the home page
 func (h *Handlers) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.Home().Render(r.Context(), w); err != nil {
+		isAdmin := middleware.IsAdmin(r)
+
+		if err := pages.Home(layouts.PageData{
+			Title:       "Home | Blog & Portfolio",
+			Description: "Welcome to my personal blog and portfolio",
+			IsAdmin:     isAdmin,
+		}).Render(r.Context(), w); err != nil {
 			h.logger.Error("Error rendering home page:", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}

@@ -22,7 +22,8 @@ func NewAuthHandlers(logger *logger.Logger) *AuthHandlers {
 // ShowLogin handles displaying the login page
 func (h *AuthHandlers) ShowLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := pages.Login().Render(r.Context(), w)
+		// Pass empty data since this is just showing the form
+		err := pages.Login(pages.LoginData{}).Render(r.Context(), w)
 		if err != nil {
 			h.logger.Error("Error rendering login page:", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -36,7 +37,7 @@ func (h *AuthHandlers) HandleLogin() http.HandlerFunc {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
-		// TODO: Replace with actual user validation from database
+		// Use default admin credentials
 		if username == "admin" && password == "admin" {
 			// Create token
 			token, err := middleware.CreateToken(1, username, "admin")
@@ -62,8 +63,10 @@ func (h *AuthHandlers) HandleLogin() http.HandlerFunc {
 			return
 		}
 
-		// Return to login page with error
-		err := pages.Login().Render(r.Context(), w)
+		// Re-render login page with error
+		err := pages.Login(pages.LoginData{
+			Error: "Invalid username or password",
+		}).Render(r.Context(), w)
 		if err != nil {
 			h.logger.Error("Error rendering login page:", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)

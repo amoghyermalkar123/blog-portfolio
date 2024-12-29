@@ -14,7 +14,8 @@ import (
 type contextKey string
 
 const (
-	UserContextKey contextKey = "user"
+	UserContextKey    contextKey = "user"
+	IsAdminContextKey contextKey = "is_admin"
 )
 
 type User struct {
@@ -23,7 +24,18 @@ type User struct {
 	Role     string
 }
 
-// RequireAuth middleware checks for valid authentication
+// Add this helper function
+func IsAdmin(r *http.Request) bool {
+	if r == nil {
+		return false
+	}
+	if admin, ok := r.Context().Value(IsAdminContextKey).(bool); ok {
+		return admin
+	}
+	return false
+}
+
+// Modify the RequireAuth middleware
 func RequireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check for session cookie
@@ -58,10 +70,7 @@ func RequireAuth(next http.Handler) http.Handler {
 
 		// Check if user has admin role
 		role, _ := claims["role"].(string)
-		if role != "admin" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
+		isAdmin := role == "admin"
 
 		// Create user context
 		user := &User{
@@ -70,8 +79,9 @@ func RequireAuth(next http.Handler) http.Handler {
 			Role:     role,
 		}
 
-		// Add user to context
+		// Add user and admin status to context
 		ctx := context.WithValue(r.Context(), UserContextKey, user)
+		ctx = context.WithValue(ctx, IsAdminContextKey, isAdmin)
 
 		// Call next handler with updated context
 		next.ServeHTTP(w, r.WithContext(ctx))

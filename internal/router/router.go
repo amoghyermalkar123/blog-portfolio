@@ -27,13 +27,17 @@ func New(logger *logger.Logger, config *config.Config, handlers *handlers.Handle
 	// Create custom middleware
 	m := custommw.New(logger)
 
+	// Log middleware setup
+	logger.Info("Setting up middleware...")
+
 	// Basic middleware
 	r.Use(m.RequestLogger)
-	r.Use(m.Recover)
+	// r.Use(m.Recover)
 	r.Use(chimw.RealIP)
 	r.Use(chimw.Timeout(60 * time.Second))
 
 	// CORS middleware
+	logger.Info("Configuring CORS with allowed origins:", config.Server.AllowOrigins)
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{config.Server.AllowOrigins},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -50,8 +54,9 @@ func New(logger *logger.Logger, config *config.Config, handlers *handlers.Handle
 		handlers: handlers,
 	}
 
-	// Setup routes
+	logger.Info("Setting up routes...")
 	router.setupRoutes()
+	logger.Info("Router initialization complete")
 
 	return router
 }
@@ -68,45 +73,33 @@ func (router *Router) setupRoutes() {
 		w.Write([]byte("OK"))
 	})
 
-	// API routes
-	r.Route("/api", func(r chi.Router) {
-		// Add API routes here
+	// Authentication routes - these must come BEFORE the admin routes
+	r.Group(func(r chi.Router) {
+		r.Get("/login", router.handlers.Auth().ShowLogin())
+		r.Post("/login", router.handlers.Auth().HandleLogin())
+		r.Get("/logout", router.handlers.Auth().HandleLogout())
 	})
 
-	// Web routes
-	r.Group(func(r chi.Router) {
-		r.Get("/", router.handlers.Home())
+	// Public routes
+	r.Get("/", router.handlers.Home())
+	r.Get("/blog", router.handlers.Posts().ListPosts())
+	r.Get("/blog/{slug}", router.handlers.Posts().GetPost())
 
-		// Blog routes
-		r.Route("/blog", func(r chi.Router) {
-			r.Get("/", router.handlers.Posts().ListPosts())
-			r.Get("/{slug}", router.handlers.Posts().GetPost())
-		})
+	// Admin routes - protected by RequireAuth middleware
+	r.Route("/admin", func(r chi.Router) {
+		r.Use(custommw.RequireAuth)
 
-		// Portfolio routes
-		r.Route("/portfolio", func(r chi.Router) {
-			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("Portfolio items will be listed here"))
-			})
-			r.Get("/{id}", func(w http.ResponseWriter, r *http.Request) {
-				id := chi.URLParam(r, "id")
-				w.Write([]byte("Portfolio item: " + id))
-			})
-		})
+		// Dashboard
+		r.Get("/dashboard", router.handlers.Admin().ShowDashboard())
 
-		// Admin routes
-		r.Route("/admin", func(r chi.Router) {
-			r.Use(custommw.RequireAuth)
-
-			// Dashboard
-			r.Get("/dashboard", router.handlers.Admin().ShowDashboard())
-
-			// Post Management
-			r.Route("/posts", func(r chi.Router) {
-				r.Get("/", router.handlers.Admin().ShowPosts())
-				r.Get("/new/", router.handlers.Admin().ShowCreatePost())
-				r.Get("/update/", router.handlers.Admin().ShowEditPost())
-			})
+		// Posts management
+		r.Route("/posts", func(r chi.Router) {
+			r.Get("/", router.handlers.Admin().ShowPosts())
+			r.Get("/new/", router.handlers.Admin().ShowCreatePost())
+			r.Get("/{id}", router.handlers.Admin().ShowEditPost())
+			r.Post("/", router.handlers.Admin().HandleCreatePost())
+			r.Put("/{id}", router.handlers.Admin().HandleUpdatePost())
+			// r.Delete("/{id}", router.handlers.Admin().HandleDeletePost())
 		})
 	})
 }

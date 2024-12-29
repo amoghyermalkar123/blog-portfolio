@@ -6,6 +6,7 @@ import "blog-portfolio/web/components"
 type PageData struct {
 Title string
 Description string
+IsAdmin bool
 }
 
 templ Base(data PageData) {
@@ -28,7 +29,9 @@ templ Base(data PageData) {
 
 <body class="h-full bg-neutral-50 dark:bg-neutral-900">
   <div class="min-h-full">
-    @components.Navbar()
+    @components.Navbar(components.NavbarProps{
+    IsAdmin: data.IsAdmin,
+    })
     <main class="container mx-auto px-4 py-8">
       { children... }
     </main>

@@ -3,11 +3,8 @@ package pages
 
 import "blog-portfolio/web/layouts"
 
-templ Home() {
-@layouts.Base(layouts.PageData{
-Title: "Home | Blog & Portfolio",
-Description: "Welcome to my personal blog and portfolio",
-}) {
+templ Home(data layouts.PageData) {
+@layouts.Base(data) {
 <div class="max-w-4xl mx-auto">
   <section class="text-center py-20">
     <h1 class="text-4xl font-bold text-neutral-900 dark:text-white font-mono mb-4">

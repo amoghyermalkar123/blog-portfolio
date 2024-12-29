@@ -10,7 +10,11 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Navbar() templ.Component {
+type NavbarProps struct {
+	IsAdmin bool
+}
+
+func Navbar(props NavbarProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -28,7 +32,17 @@ func Navbar() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<nav class=\"bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700\"><div class=\"container mx-auto px-4\"><div class=\"flex justify-between h-16\"><div class=\"flex\"><div class=\"flex-shrink-0 flex items-center\"><a href=\"/\" class=\"text-xl font-bold text-neutral-900 dark:text-white font-mono\">Blog & Portfolio</a></div><div class=\"hidden sm:ml-6 sm:flex sm:space-x-8\"><a href=\"/\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-900 dark:text-white\">Home</a> <a href=\"/blog\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\">Blog</a> <a href=\"/portfolio\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\">Portfolio</a></div></div><div class=\"flex items-center\"><button type=\"button\" x-data=\"{ darkMode: localStorage.theme === &#39;dark&#39; }\" @click=\"darkMode = !darkMode; localStorage.theme = darkMode ? &#39;dark&#39; : &#39;light&#39;; document.documentElement.classList.toggle(&#39;dark&#39;)\" class=\"p-2 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\"><span x-show=\"!darkMode\" class=\"w-5 h-5\">🌙</span> <span x-show=\"darkMode\" class=\"w-5 h-5\">☀️</span></button></div></div></div></nav>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<nav class=\"bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700\"><div class=\"container mx-auto px-4\"><div class=\"flex justify-between h-16\"><div class=\"flex\"><div class=\"flex-shrink-0 flex items-center\"><a href=\"/\" class=\"text-xl font-bold text-neutral-900 dark:text-white font-mono\">Blog & Portfolio</a></div><div class=\"hidden sm:ml-6 sm:flex sm:space-x-8\"><a href=\"/\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-900 dark:text-white\">Home</a> <a href=\"/blog\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\">Blog</a> <a href=\"/portfolio\" class=\"inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\">Portfolio</a></div></div><div class=\"flex items-center space-x-4\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if props.IsAdmin {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/admin/dashboard\" class=\"inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700\">Admin Dashboard</a> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button type=\"button\" x-data=\"{ darkMode: localStorage.theme === &#39;dark&#39; }\" @click=\"darkMode = !darkMode; localStorage.theme = darkMode ? &#39;dark&#39; : &#39;light&#39;; document.documentElement.classList.toggle(&#39;dark&#39;)\" class=\"p-2 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white\"><span x-show=\"!darkMode\" class=\"w-5 h-5\">🌙</span> <span x-show=\"darkMode\" class=\"w-5 h-5\">☀️</span></button></div></div></div></nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
