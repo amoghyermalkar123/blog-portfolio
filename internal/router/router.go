@@ -105,6 +105,7 @@ func (router *Router) setupRoutes() {
 			r.Route("/posts", func(r chi.Router) {
 				r.Get("/", router.handlers.Admin().ShowPosts())
 				r.Get("/new/", router.handlers.Admin().ShowCreatePost())
+				r.Get("/update/", router.handlers.Admin().ShowEditPost())
 			})
 		})
 	})
