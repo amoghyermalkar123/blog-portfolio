@@ -40,3 +40,4 @@ web/static/css/main.css
 node_modules/
 tmp
 *.txt
+blog-server
