@@ -50,12 +50,14 @@ func main() {
 
 	// Initialize repositories
 	postRepo := repository.NewPostRepository(db.DB)
+	tagRepo := repository.NewTagRepository(db.DB) // New tag repository
 
 	// Initialize services
 	postService := service.NewPostService(postRepo)
+	tagService := service.NewTagService(tagRepo) // New tag service
 
 	// Initialize handlers
-	h := handlers.New(log, postService)
+	h := handlers.New(log, postService, tagService)
 
 	// Initialize router
 	r := router.New(log, cfg, h)
