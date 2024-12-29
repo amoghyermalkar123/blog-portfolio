@@ -1,0 +1,31 @@
+// web/components/pagination.templ
+package components
+
+templ Pagination(currentPage int, hasMore bool) {
+<nav class="flex items-center justify-between mt-8 border-t border-neutral-200 dark:border-neutral-700 pt-6">
+  <div class="flex-1 flex justify-between">
+    if currentPage > 1 {
+    <a href={ templ.SafeURL("?page=" + string(currentPage-1)) }
+					class=" relative inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-sm
+      font-medium rounded-md text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:bg-neutral-50
+      dark:hover:bg-neutral-700" hx-get={ "/blog?page=" + string(currentPage-1) } hx-target="#post-list"
+      hx-swap="innerHTML">
+      Previous
+    </a>
+    } else {
+    <div></div>
+    }
+    if hasMore {
+    <a href={ templ.SafeURL("?page=" + string(currentPage+1)) }
+					class=" ml-3 relative inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-sm
+      font-medium rounded-md text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:bg-neutral-50
+      dark:hover:bg-neutral-700" hx-get={ "/blog?page=" + string(currentPage+1) } hx-target="#post-list"
+      hx-swap="innerHTML">
+      Next
+    </a>
+    } else {
+    <div></div>
+    }
+  </div>
+</nav>
+}
