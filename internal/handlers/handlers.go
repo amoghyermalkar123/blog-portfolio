@@ -4,6 +4,7 @@ package handlers
 import (
 	"blog-portfolio/internal/logger"
 	"blog-portfolio/internal/middleware"
+	"blog-portfolio/internal/models"
 	"blog-portfolio/internal/service"
 	"blog-portfolio/web/layouts"
 	"blog-portfolio/web/pages"
@@ -11,19 +12,21 @@ import (
 )
 
 type Handlers struct {
-	logger *logger.Logger
-	posts  *PostHandlers
-	auth   *AuthHandlers
-	admin  *AdminHandlers
+	logger      *logger.Logger
+	posts       *PostHandlers
+	auth        *AuthHandlers
+	admin       *AdminHandlers
+	postService *service.PostService
 }
 
 // New creates a new instance of Handlers
 func New(logger *logger.Logger, postService *service.PostService, tagService *service.TagService) *Handlers {
 	return &Handlers{
-		logger: logger,
-		posts:  NewPostHandlers(postService, logger),
-		auth:   NewAuthHandlers(logger),
-		admin:  NewAdminHandlers(logger, postService),
+		logger:      logger,
+		posts:       NewPostHandlers(postService, logger),
+		auth:        NewAuthHandlers(logger),
+		admin:       NewAdminHandlers(logger, postService),
+		postService: postService,
 	}
 }
 
@@ -45,13 +48,25 @@ func (h *Handlers) Admin() *AdminHandlers {
 // Home handles the home page
 func (h *Handlers) Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		isAdmin := middleware.IsAdmin(r)
+		ctx := r.Context()
 
+		// Get latest posts - fixing the service call
+		published := true
+		latestPosts, err := h.postService.ListPosts(ctx, models.PostFilter{
+			Published: &published,
+			Limit:     3,
+		})
+		if err != nil {
+			h.logger.Error("Error fetching latest posts:", err)
+			latestPosts = []*models.Post{} // Empty slice if error
+		}
+
+		// Pass data to template
 		if err := pages.Home(layouts.PageData{
 			Title:       "Home | Blog & Portfolio",
 			Description: "Welcome to my personal blog and portfolio",
-			IsAdmin:     isAdmin,
-		}).Render(r.Context(), w); err != nil {
+			IsAdmin:     middleware.IsAdmin(r),
+		}, latestPosts).Render(ctx, w); err != nil {
 			h.logger.Error("Error rendering home page:", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
