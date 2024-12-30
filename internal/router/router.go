@@ -99,7 +99,7 @@ func (router *Router) setupRoutes() {
 			r.Get("/{id}", router.handlers.Admin().ShowEditPost())
 			r.Post("/", router.handlers.Admin().HandleCreatePost())
 			r.Put("/{id}", router.handlers.Admin().HandleUpdatePost())
-			// r.Delete("/{id}", router.handlers.Admin().HandleDeletePost())
+			r.Delete("/{id}", router.handlers.Admin().HandleDeletePost())
 		})
 	})
 

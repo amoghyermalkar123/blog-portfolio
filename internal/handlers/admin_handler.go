@@ -325,3 +325,27 @@ func (h *AdminHandlers) HandleUpdatePost() http.HandlerFunc {
 		http.Redirect(w, r, "/admin/posts?success=updated", http.StatusSeeOther)
 	}
 }
+
+func (h *AdminHandlers) HandleDeletePost() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Get post ID from URL
+		idStr := chi.URLParam(r, "id")
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			h.logger.Error("Invalid post ID:", err)
+			http.Error(w, "Invalid post ID", http.StatusBadRequest)
+			return
+		}
+
+		// Delete post
+		err = h.posts.DeletePost(r.Context(), id)
+		if err != nil {
+			h.logger.Error("Error deleting post:", err)
+			http.Error(w, "Failed to delete post", http.StatusInternalServerError)
+			return
+		}
+
+		// Return 200 OK - HTMX will handle removing the element from the DOM
+		w.WriteHeader(http.StatusOK)
+	}
+}
