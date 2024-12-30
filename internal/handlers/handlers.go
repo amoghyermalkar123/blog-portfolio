@@ -15,7 +15,6 @@ type Handlers struct {
 	posts  *PostHandlers
 	auth   *AuthHandlers
 	admin  *AdminHandlers
-	tags   *TagHandlers // New field for tag handlers
 }
 
 // New creates a new instance of Handlers
@@ -25,7 +24,6 @@ func New(logger *logger.Logger, postService *service.PostService, tagService *se
 		posts:  NewPostHandlers(postService, logger),
 		auth:   NewAuthHandlers(logger),
 		admin:  NewAdminHandlers(logger, postService),
-		tags:   NewTagHandlers(logger, tagService), // Initialize tag handlers
 	}
 }
 
@@ -42,11 +40,6 @@ func (h *Handlers) Auth() *AuthHandlers {
 // Admin returns the admin handlers
 func (h *Handlers) Admin() *AdminHandlers {
 	return h.admin
-}
-
-// Add a new method to access tag handlers
-func (h *Handlers) Tags() *TagHandlers {
-	return h.tags
 }
 
 // Home handles the home page

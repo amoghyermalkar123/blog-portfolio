@@ -102,13 +102,4 @@ func (router *Router) setupRoutes() {
 			r.Delete("/{id}", router.handlers.Admin().HandleDeletePost())
 		})
 	})
-
-	r.Route("/api", func(r chi.Router) {
-		r.Route("/tags", func(r chi.Router) {
-			r.Use(custommw.RequireAuth) // Protect these endpoints
-			r.Post("/", router.handlers.Tags().CreateTag())
-			r.Put("/{id}", router.handlers.Tags().UpdateTag())
-			r.Delete("/{id}", router.handlers.Tags().DeleteTag())
-		})
-	})
 }
