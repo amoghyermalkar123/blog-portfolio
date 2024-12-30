@@ -3,8 +3,12 @@ package pages
 
 import (
 	"blog-portfolio/internal/models"
+	"blog-portfolio/internal/utils"
 	"blog-portfolio/web/components"
 	"blog-portfolio/web/layouts"
+	"fmt"
+	"regexp"
+	"strings"
 )
 
 // Main blog listing page
@@ -59,31 +63,57 @@ templ BlogPost(post *models.Post) {
 				<h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
 					{ post.Title }
 				</h1>
-				<div class="flex items-center space-x-4 text-sm text-neutral-600 dark:text-neutral-400">
+				<div class="flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400">
 					<time datetime={ post.PublishedAt.Format("2006-01-02") }>
 						{ post.PublishedAt.Format("January 2, 2006") }
 					</time>
+					<span>•</span>
+					<span>{ fmt.Sprintf("%d min read", post.ReadingTime) }</span>
 					if len(post.Tags) > 0 {
-						<div class="flex items-center space-x-2">
-							<span>•</span>
-							<div class="flex flex-wrap gap-2">
-								for _, tag := range post.Tags {
-									@components.Tag(tag)
-								}
-							</div>
+						<span>•</span>
+						<div class="flex flex-wrap gap-2">
+							for _, tag := range post.Tags {
+								@components.Tag(tag)
+							}
 						</div>
 					}
 				</div>
 			</header>
-			if post.CoverImage != "" {
-				<div class="mb-8">
-					<img src={ post.CoverImage } alt={ post.Title } class="rounded-lg w-full object-cover"/>
-				</div>
-			}
+			// Table of Contents
+			<div class="mb-8 p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg">
+				<h2 class="text-lg font-semibold mb-4">Table of Contents</h2>
+				<nav class="toc">
+					<ul class="space-y-2">
+						for _, entry := range utils.GenerateTableOfContents(post.Content) {
+							<li class={ fmt.Sprintf("ml-%d", (entry.Level-1)*4) }>
+								<a
+									href={ templ.SafeURL("#" + entry.ID) }
+									class="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400"
+								>
+									{ entry.Title }
+								</a>
+							</li>
+						}
+					</ul>
+				</nav>
+			</div>
+			// Add IDs to headings in content for TOC links
 			<div class="prose dark:prose-invert max-w-none">
-				// Use raw HTML rendering since we trust our own markdown parsing
+				<!-- @templ.Raw(processContent(post.Content)) -->
 				@templ.Raw(post.ParsedContent())
 			</div>
 		</article>
 	}
+}
+
+// Helper function to add IDs to headings
+func processContent(content string) string {
+	headingRegex := regexp.MustCompile(`(?m)^(#{1,6})\s+(.+)$`)
+	return headingRegex.ReplaceAllStringFunc(content, func(match string) string {
+		parts := headingRegex.FindStringSubmatch(match)
+		level, title := parts[1], parts[2]
+		id := strings.ToLower(strings.ReplaceAll(title, " ", "-"))
+		id = regexp.MustCompile(`[^a-z0-9-]`).ReplaceAllString(id, "")
+		return fmt.Sprintf("%s %s {#%s}", level, title, id)
+	})
 }

@@ -21,6 +21,7 @@ type Post struct {
 	UpdatedAt   time.Time  `json:"updated_at"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	Tags        []Tag      `json:"tags,omitempty"`
+	ReadingTime int        `json:"reading_time"`
 }
 
 // PostFilter represents filters for querying posts

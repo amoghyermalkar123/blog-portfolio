@@ -8,3 +8,25 @@
     font-family: 'JetBrains Mono', monospace;
   }
 }
+
+/* Table of Contents styling */
+.toc {
+  @apply text-sm;
+}
+
+.toc ul {
+  @apply list-none p-0;
+}
+
+.toc a {
+  @apply transition-colors duration-200;
+}
+
+.prose h1[id],
+.prose h2[id],
+.prose h3[id],
+.prose h4[id],
+.prose h5[id],
+.prose h6[id] {
+  @apply scroll-mt-20;
+}

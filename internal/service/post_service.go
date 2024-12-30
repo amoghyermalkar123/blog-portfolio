@@ -4,6 +4,7 @@ package service
 import (
 	"blog-portfolio/internal/models"
 	"blog-portfolio/internal/repository"
+	"blog-portfolio/internal/utils"
 	"context"
 	"strings"
 	"time"
@@ -35,7 +36,15 @@ func (s *PostService) CreatePost(ctx context.Context, post *models.Post, tagIds 
 
 // GetPost retrieves a post by its slug
 func (s *PostService) GetPost(ctx context.Context, slug string) (*models.Post, error) {
-	return s.repo.GetPost(ctx, slug)
+	post, err := s.repo.GetPost(ctx, slug)
+	if err != nil {
+		return nil, err
+	}
+
+	// Calculate reading time
+	post.ReadingTime = utils.CalculateReadingTime(post.Content)
+
+	return post, nil
 }
 
 // ListPosts returns a list of posts based on the filter
