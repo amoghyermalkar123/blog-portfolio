@@ -18,35 +18,42 @@ templ Blog(posts []*models.Post, currentPage int, activeTag string) {
 		Description: "Read my latest blog posts about technology and software development",
 	}) {
 		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-			<h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-8">Blog</h1>
+			<h1 class="text-4xl font-bold text-pastel-text dark:text-white mb-8">Blog</h1>
 			if activeTag != "" {
 				<div class="mb-6">
-					<span class="text-sm text-neutral-600 dark:text-neutral-400">
+					<span class="text-sm text-pastel-text/70 dark:text-neutral-400">
 						Showing posts tagged with:
 					</span>
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-800 dark:text-primary-100"
+						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pastel-purple/20 text-pastel-text ml-2"
 					>
 						{ activeTag }
 					</span>
 				</div>
 			}
-			@BlogPostList(posts)
-			@components.Pagination(currentPage, len(posts) == 10)
-			// Show pagination if we have full page
+			// Posts grid with more spacing
+			<div class="space-y-8">
+				@BlogPostList(posts)
+			</div>
+			// Add some space before pagination
+			<div class="mt-12">
+				@components.Pagination(currentPage, len(posts) == 10)
+			</div>
 		</div>
 	}
 }
 
 // Blog post list component (used for both main page and HTMX updates)
 templ BlogPostList(posts []*models.Post) {
-	<div class="space-y-10">
+	<div class="space-y-8">
 		for _, post := range posts {
 			@components.PostPreview(post)
 		}
 		if len(posts) == 0 {
-			<div class="text-center py-12">
-				<p class="text-neutral-600 dark:text-neutral-400">No posts found.</p>
+			<div class="text-center py-12 bg-pastel-warmGray/30 dark:bg-neutral-800 rounded-xl">
+				<p class="text-pastel-text/70 dark:text-neutral-400">
+					No posts found.
+				</p>
 			</div>
 		}
 	</div>

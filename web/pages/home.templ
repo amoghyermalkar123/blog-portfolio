@@ -2,102 +2,149 @@ package pages
 
 import (
 	"blog-portfolio/internal/models"
-	"blog-portfolio/web/components"
 	"blog-portfolio/web/layouts"
 )
 
 templ Home(data layouts.PageData, latestPosts []*models.Post) {
-	@layouts.Base(layouts.PageData{
-		Title:       "Home | Blog & Portfolio",
-		Description: "Welcome to my personal blog and portfolio",
-	}) {
-		// Hero Section
-		<section class="bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-800">
-			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+	@layouts.Base(data) {
+		// Hero Section with soft gradient background
+		<section class="bg-gradient-to-b from-pastel-warmGray to-pastel-base dark:from-neutral-900 dark:to-neutral-800">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
 				<div class="text-center">
-					<h1 class="text-4xl font-bold text-neutral-900 dark:text-white sm:text-5xl">
+					<div class="mb-8 flex justify-center">
+						// Optional: Add a welcoming illustration or icon here
+						<div
+							class="w-24 h-24 rounded-full bg-gradient-to-r from-pastel-blue to-pastel-purple flex items-center justify-center"
+						>
+							<span class="text-4xl">📚</span>
+						</div>
+					</div>
+					<h1 class="text-5xl font-bold text-neutral-800 dark:text-white mb-6 leading-tight">
 						Welcome to My Digital Garden
 					</h1>
-					<p class="mt-4 text-lg text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
-						I write about software development, technology, and my journey as a developer.
-						Here you'll find my thoughts, projects, and learnings.
+					<p class="mt-4 text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed">
+						I write about software development and technology in a way that's
+						easy to understand and enjoyable to read.
 					</p>
-					<div class="mt-8 flex justify-center gap-4">
+					<div class="mt-10 flex justify-center gap-6">
 						<a
 							href="/blog"
-							class="rounded-md bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-500"
+							class="rounded-lg bg-gradient-to-r from-pastel-blue to-pastel-purple px-6 py-3 text-neutral-800 font-medium hover:opacity-90 transition-all transform hover:scale-105"
 						>
-							Read the Blog
+							Start Reading
 						</a>
 						<a
-							href="https://github.com/yourusername"
-							target="_blank"
-							class="rounded-md bg-neutral-100 dark:bg-neutral-800 px-4 py-2.5 text-sm font-semibold text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-700"
+							href="/about"
+							class="rounded-lg bg-white dark:bg-neutral-800 px-6 py-3 text-neutral-800 dark:text-white font-medium hover:bg-pastel-yellow transition-all"
 						>
-							View Projects
+							About Me
 						</a>
 					</div>
 				</div>
 			</div>
 		</section>
 		// Latest Posts Section
-		<section class="py-16 bg-white dark:bg-neutral-900">
+		<section class="py-20 bg-pastel-base dark:bg-neutral-900">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="flex justify-between items-baseline mb-8">
-					<h2 class="text-2xl font-bold text-neutral-900 dark:text-white">
-						Latest Posts
+				<div class="flex justify-between items-baseline mb-12">
+					<h2 class="text-3xl font-bold text-neutral-800 dark:text-white">
+						Latest Writings
 					</h2>
-					<a href="/blog" class="text-primary-600 dark:text-primary-400 hover:text-primary-500">
-						View all posts →
+					<a
+						href="/blog"
+						class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 transition-colors flex items-center gap-2"
+					>
+						View all posts
+						<span class="text-lg">→</span>
 					</a>
 				</div>
-				<div class="space-y-8">
+				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 					for _, post := range latestPosts {
-						@components.PostPreview(post)
+						<article
+							class="bg-pastel-paper dark:bg-neutral-800 rounded-xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1"
+						>
+							if post.CoverImage != "" {
+								<img src={ post.CoverImage } alt={ post.Title } class="w-full h-48 object-cover"/>
+							}
+							<div class="p-6">
+								<div class="flex gap-2 mb-3">
+									for _, tag := range post.Tags {
+										<span
+											class="inline-block px-3 py-1 rounded-full text-xs bg-pastel-purple/20 text-neutral-700 dark:text-neutral-300"
+										>
+											{ tag.Name }
+										</span>
+									}
+								</div>
+								<h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
+									{ post.Title }
+								</h3>
+								<p class="text-neutral-600 dark:text-neutral-400 text-sm mb-4 line-clamp-2">
+									{ post.Description }
+								</p>
+								<a
+									href={ templ.SafeURL("/blog/" + post.Slug) }
+									class="text-neutral-800 dark:text-white font-medium hover:text-pastel-blue transition-colors"
+								>
+									Read more →
+								</a>
+							</div>
+						</article>
 					}
 					if len(latestPosts) == 0 {
-						<div class="text-center py-12 text-neutral-600 dark:text-neutral-400">
+						<div class="text-center py-12 text-neutral-600 dark:text-neutral-400 col-span-full">
 							No posts yet. Check back soon!
 						</div>
 					}
 				</div>
 			</div>
 		</section>
-		// Featured Projects Section
-		<section class="py-16 bg-neutral-50 dark:bg-neutral-800">
+		// Topics/Categories Section
+		<section class="py-20 bg-pastel-warmGray dark:bg-neutral-800">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-8">
-					Featured Projects
+				<h2 class="text-3xl font-bold text-neutral-800 dark:text-white text-center mb-12">
+					What I Write About
 				</h2>
-				<div class="grid gap-8 md:grid-cols-2">
-					// Project Card 1
-					<div class="bg-white dark:bg-neutral-900 rounded-lg shadow-sm p-6">
-						<h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
-							Project Name
-						</h3>
-						<p class="text-neutral-600 dark:text-neutral-400 mb-4">
-							Brief description of the project and what technologies were used.
-						</p>
-						<div class="flex gap-2">
-							<a href="#" class="text-primary-600 hover:text-primary-500">
-								View Project →
-							</a>
-						</div>
+				<div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+					// Topic cards with pastel backgrounds
+					<div class="bg-gradient-to-br from-pastel-blue/50 to-pastel-purple/50 p-6 rounded-xl text-center">
+						<div class="text-3xl mb-3">🚀</div>
+						<h3 class="font-medium text-neutral-800 dark:text-white">Systems Programming</h3>
 					</div>
-					// Project Card 2 (you can add more)
-					<div class="bg-white dark:bg-neutral-900 rounded-lg shadow-sm p-6">
-						<h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
-							Another Project
-						</h3>
-						<p class="text-neutral-600 dark:text-neutral-400 mb-4">
-							Brief description of another interesting project.
-						</p>
-						<div class="flex gap-2">
-							<a href="#" class="text-primary-600 hover:text-primary-500">
-								View Project →
-							</a>
-						</div>
+					<div class="bg-gradient-to-br from-pastel-green/50 to-pastel-blue/50 p-6 rounded-xl text-center">
+						<div class="text-3xl mb-3">⚡</div>
+						<h3 class="font-medium text-neutral-800 dark:text-white">Performance</h3>
 					</div>
+					<div class="bg-gradient-to-br from-pastel-yellow/50 to-pastel-green/50 p-6 rounded-xl text-center">
+						<div class="text-3xl mb-3">🛠️</div>
+						<h3 class="font-medium text-neutral-800 dark:text-white">Tools & Tips</h3>
+					</div>
+				</div>
+			</div>
+		</section>
+		// Newsletter Section (Optional)
+		<section class="py-20 bg-gradient-to-b from-pastel-base to-pastel-warmGray dark:from-neutral-900 dark:to-neutral-800">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="bg-white dark:bg-neutral-800 rounded-2xl p-8 md:p-12 shadow-sm">
+					<h2 class="text-2xl md:text-3xl font-bold text-neutral-800 dark:text-white text-center mb-4">
+						Stay Updated
+					</h2>
+					<p class="text-neutral-600 dark:text-neutral-400 text-center max-w-2xl mx-auto mb-8">
+						Get notified when I publish new articles about systems programming, performance optimization, and more.
+					</p>
+					<form class="max-w-md mx-auto flex gap-4">
+						<input
+							type="email"
+							placeholder="Enter your email"
+							class="flex-1 rounded-lg border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900 focus:ring-pastel-blue focus:border-pastel-blue"
+						/>
+						<button
+							type="submit"
+							class="px-6 py-2 bg-gradient-to-r from-pastel-purple to-pastel-blue text-neutral-800 rounded-lg hover:opacity-90 transition-opacity font-medium"
+						>
+							Subscribe
+						</button>
+					</form>
 				</div>
 			</div>
 		</section>
