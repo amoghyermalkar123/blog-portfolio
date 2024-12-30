@@ -3,6 +3,10 @@ package models
 
 import (
 	"time"
+
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 )
 
 type Post struct {
@@ -25,4 +29,23 @@ type PostFilter struct {
 	Published *bool
 	Limit     int
 	Offset    int
+}
+
+func (p *Post) ParsedContent() string {
+	// Create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	post := parser.NewWithExtensions(extensions)
+
+	// Parse the markdown
+	doc := post.Parse([]byte(p.Content))
+
+	// Create HTML renderer with options
+	opts := html.RendererOptions{
+		Flags: html.CommonFlags | html.HrefTargetBlank,
+		Title: p.Title,
+	}
+	renderer := html.NewRenderer(opts)
+
+	// Render to HTML
+	return string(markdown.Render(doc, renderer))
 }

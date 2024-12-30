@@ -69,7 +69,7 @@ func PostEditor(data PostEditorData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2></div><div class=\"mt-4 flex md:mt-0 md:ml-4\"><button type=\"submit\" form=\"post-form\" name=\"action\" value=\"draft\" class=\"inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500\">Save as Draft</button> <button type=\"submit\" form=\"post-form\" name=\"action\" value=\"publish\" class=\"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500\">Publish</button></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2></div><div class=\"mt-4 flex md:mt-0 md:ml-4\"><button type=\"button\" onclick=\"previewPost()\" class=\"mr-2 inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500\">Preview</button> <button type=\"submit\" form=\"post-form\" name=\"action\" value=\"draft\" class=\"inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500\">Save as Draft</button> <button type=\"submit\" form=\"post-form\" name=\"action\" value=\"publish\" class=\"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500\">Publish</button></div><dialog id=\"previewModal\" class=\"w-full max-w-4xl p-4 rounded-lg shadow-xl dark:bg-neutral-800\"><div class=\"flex justify-between items-center mb-4\"><h3 class=\"text-lg font-medium text-neutral-900 dark:text-white\">Post Preview</h3><button onclick=\"window.previewModal.close()\" class=\"text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300\"><span class=\"sr-only\">Close</span> <svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div><div class=\"prose dark:prose-invert max-w-none\" id=\"previewContent\"></div></dialog></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -81,7 +81,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(data.Error)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 61, Col: 22}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 101, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -101,7 +101,7 @@ func PostEditor(data PostEditorData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" novalidate>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -118,7 +118,7 @@ func PostEditor(data PostEditorData) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(getPostTitle(data))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 77, Col: 88}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 122, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -132,7 +132,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(data.Post.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 91, Col: 35}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 141, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -147,7 +147,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(data.Post.Content)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 105, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 160, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -161,7 +161,7 @@ func PostEditor(data PostEditorData) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(getPostCoverImage(data))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 118, Col: 95}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 177, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +179,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("tag-%d", tag.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 131, Col: 55}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 192, Col: 45}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {
@@ -193,7 +193,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d",
 					tag.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 132, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 196, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -216,7 +216,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("tag-%d", tag.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 136, Col: 56}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 202, Col: 52}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -229,7 +229,7 @@ func PostEditor(data PostEditorData) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(tag.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 137, Col: 26}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/admin/editor.templ`, Line: 203, Col: 21}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -240,7 +240,7 @@ func PostEditor(data PostEditorData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></form></div><link rel=\"stylesheet\" href=\"https://unpkg.com/easymde/dist/easymde.min.css\"><script src=\"https://unpkg.com/easymde/dist/easymde.min.js\"></script>  <script>\n  const easyMDE = new EasyMDE({\n    element: document.getElementById('content'),\n    autofocus: true,\n    spellChecker: false,\n    toolbar: [\n      'bold', 'italic', 'heading', '|',\n      'code', 'quote', 'unordered-list', 'ordered-list', '|',\n      'link', 'image', '|',\n      'preview', 'side-by-side', 'fullscreen', '|',\n      'guide'\n    ],\n    status: ['autosave', 'lines', 'words', 'cursor'],\n    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',\n    minHeight: '400px',\n    placeholder: 'Write your content here...',\n    renderingConfig: {\n      singleLineBreaks: false,\n      codeSyntaxHighlighting: true,\n    }\n  });\n\n  // Handle dark mode toggle\n  const observer = new MutationObserver((mutations) => {\n    mutations.forEach((mutation) => {\n      if (mutation.attributeName === 'class') {\n        const isDark = document.documentElement.classList.contains('dark');\n        easyMDE.updateTheme(isDark ? 'dark' : 'light');\n      }\n    });\n  });\n\n  observer.observe(document.documentElement, {\n    attributes: true\n  });\n\n  // Add custom styles for dark mode\n  const style = document.createElement('style');\n  style.textContent = `\n    .dark .EasyMDEContainer .CodeMirror {\n      background-color: rgb(38 38 38) !important;\n      color: #fff !important;\n      border-color: rgb(64 64 64) !important;\n    }\n    \n    .dark .editor-toolbar button {\n      color: #fff !important;\n    }\n    \n    .dark .editor-toolbar button:hover {\n      background-color: rgb(64 64 64) !important;\n    }\n\n    .dark .editor-toolbar {\n      border-color: rgb(64 64 64) !important;\n    }\n\n    .dark .EasyMDEContainer .CodeMirror-cursor {\n      border-color: #fff !important;\n    }\n\n    .dark .editor-preview {\n      background-color: rgb(38 38 38) !important;\n      color: #fff !important;\n    }\n\n    .dark .cm-s-easymde .CodeMirror-gutters {\n      background-color: rgb(38 38 38) !important;\n      border-right: 1px solid rgb(64 64 64) !important;\n    }\n\n    .dark .editor-toolbar.fullscreen {\n      background-color: rgb(38 38 38) !important;\n    }\n\n    .dark .editor-preview-side {\n      background-color: rgb(38 38 38) !important;\n    }\n  `;\n  document.head.appendChild(style);\n\n  function previewPost() {\n    const title = document.getElementById('title').value;\n    const content = document.getElementById('content').value;\n    const previewContent = document.getElementById('previewContent');\n\n    // Create preview content\n    previewContent.innerHTML = `\n      <h1>${title}</h1>\n      ${content}\n    `;\n\n    // Show preview modal\n    window.previewModal.showModal();\n  }\n</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

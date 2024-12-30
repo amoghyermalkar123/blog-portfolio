@@ -2,186 +2,351 @@
 package admin
 
 import (
-"blog-portfolio/internal/models"
-"blog-portfolio/web/layouts"
-"fmt"
+	"blog-portfolio/internal/models"
+	"blog-portfolio/web/layouts"
+	"fmt"
 )
 
 // PostEditorData holds all the data needed for the post editor
 type PostEditorData struct {
-Post *models.Post // Can be nil for new posts
-Tags []models.Tag // All available tags
-IsNew bool // True if creating new post
-Error string // Any error message to display
+	Post  *models.Post // Can be nil for new posts
+	Tags  []models.Tag // All available tags
+	IsNew bool         // True if creating new post
+	Error string       // Any error message to display
 }
 
 templ PostEditor(data PostEditorData) {
-@layouts.Admin(layouts.PageData{
-Title: getEditorTitle(data),
-Description: "Create or edit a blog post",
-}) {
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-  <div class="md:flex md:items-center md:justify-between">
-    <div class="flex-1 min-w-0">
-      <h2 class="text-2xl font-bold leading-7 text-neutral-900 dark:text-white sm:text-3xl sm:truncate">
-        if data.IsNew {
-        New Post
-        } else {
-        Edit Post
-        }
-      </h2>
-    </div>
-    <div class="mt-4 flex md:mt-0 md:ml-4">
-      <button type="submit" form="post-form" name="action" value="draft"
-        class="inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-        Save as Draft
-      </button>
-      <button type="submit" form="post-form" name="action" value="publish"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-        Publish
-      </button>
-    </div>
-  </div>
-  if data.Error != "" {
-  <div class="mt-6 rounded-md bg-red-50 dark:bg-red-900 p-4">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-          aria-hidden="true">
-          <path fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-            clip-rule="evenodd"></path>
-        </svg>
-      </div>
-      <div class="ml-3">
-        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
-          Error
-        </h3>
-        <div class="mt-2 text-sm text-red-700 dark:text-red-300">
-          { data.Error }
-        </div>
-      </div>
-    </div>
-  </div>
-  }
-  <form id="post-form" class="mt-6 space-y-8" method="POST" action={ templ.SafeURL(getFormAction(data)) }>
-    if !data.IsNew {
-    <input type="hidden" name="_method" value="PUT" />
+	@layouts.Admin(layouts.PageData{
+		Title:       getEditorTitle(data),
+		Description: "Create or edit a blog post",
+	}) {
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+			<div class="md:flex md:items-center md:justify-between">
+				<div class="flex-1 min-w-0">
+					<h2 class="text-2xl font-bold leading-7 text-neutral-900 dark:text-white sm:text-3xl sm:truncate">
+						if data.IsNew {
+							New Post
+						} else {
+							Edit Post
+						}
+					</h2>
+				</div>
+				<div class="mt-4 flex md:mt-0 md:ml-4">
+					<button
+						type="button"
+						onclick="previewPost()"
+						class="mr-2 inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+					>
+						Preview
+					</button>
+					<button
+						type="submit"
+						form="post-form"
+						name="action"
+						value="draft"
+						class="inline-flex items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+					>
+						Save as Draft
+					</button>
+					<button
+						type="submit"
+						form="post-form"
+						name="action"
+						value="publish"
+						class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+					>
+						Publish
+					</button>
+				</div>
+				// Add preview dialog
+				<dialog id="previewModal" class="w-full max-w-4xl p-4 rounded-lg shadow-xl dark:bg-neutral-800">
+					<div class="flex justify-between items-center mb-4">
+						<h3 class="text-lg font-medium text-neutral-900 dark:text-white">Post Preview</h3>
+						<button
+							onclick="window.previewModal.close()"
+							class="text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+						>
+							<span class="sr-only">Close</span>
+							<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+							</svg>
+						</button>
+					</div>
+					<div class="prose dark:prose-invert max-w-none" id="previewContent"></div>
+				</dialog>
+			</div>
+			if data.Error != "" {
+				<div class="mt-6 rounded-md bg-red-50 dark:bg-red-900 p-4">
+					<div class="flex">
+						<div class="flex-shrink-0">
+							<svg
+								class="h-5 w-5 text-red-400"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+									clip-rule="evenodd"
+								></path>
+							</svg>
+						</div>
+						<div class="ml-3">
+							<h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+								Error
+							</h3>
+							<div class="mt-2 text-sm text-red-700 dark:text-red-300">
+								{ data.Error }
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+			<form id="post-form" class="mt-6 space-y-8" method="POST" action={ templ.SafeURL(getFormAction(data)) } novalidate>
+				if !data.IsNew {
+					<input type="hidden" name="_method" value="PUT"/>
+				}
+				<div class="space-y-6">
+					<div>
+						<label for="title" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+							Title
+						</label>
+						<div class="mt-1">
+							<input
+								type="text"
+								name="title"
+								id="title"
+								required
+								value={ getPostTitle(data) }
+								class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
+								placeholder="Post title"
+							/>
+						</div>
+					</div>
+					<div>
+						<label for="description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+							Description
+						</label>
+						<div class="mt-1">
+							<textarea
+								id="description"
+								name="description"
+								rows="3"
+								class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
+								placeholder="A brief description of your post"
+							>
+								if data.Post != nil {
+									{ data.Post.Description }
+								}
+							</textarea>
+						</div>
+					</div>
+					<div>
+						<label for="content" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+							Content
+						</label>
+						<div class="mt-1">
+							<textarea
+								id="content"
+								name="content"
+								rows="20"
+								required
+								class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white font-mono"
+								placeholder="Write your post content here..."
+							>
+								if data.Post != nil {
+									{ data.Post.Content }
+								}
+							</textarea>
+						</div>
+						<p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+							Write your post content using Markdown formatting.
+						</p>
+					</div>
+					<div>
+						<label for="cover_image" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+							Cover Image URL
+						</label>
+						<div class="mt-1">
+							<input
+								type="url"
+								name="cover_image"
+								id="cover_image"
+								value={ getPostCoverImage(data) }
+								class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
+								placeholder="https://example.com/image.jpg"
+							/>
+						</div>
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+							Tags
+						</label>
+						<div class="mt-2 space-y-2">
+							for _, tag := range data.Tags {
+								<div class="relative flex items-start">
+									<div class="flex items-center h-5">
+										<input
+											id={ fmt.Sprintf("tag-%d", tag.ID) }
+											name="tags[]"
+											type="checkbox"
+											value={ fmt.Sprintf("%d",
+                tag.ID) }
+											checked?={ data.Post !=nil && hasTag(data.Post.Tags, tag) }
+											class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-neutral-300 dark:border-neutral-600 rounded"
+										/>
+									</div>
+									<div class="ml-3 text-sm">
+										<label for={ fmt.Sprintf("tag-%d", tag.ID) } class="text-neutral-700 dark:text-neutral-300">
+											{ tag.Name }
+										</label>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css"/>
+		<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+		// Add preview script at the bottom of the form
+		<script>
+  const easyMDE = new EasyMDE({
+    element: document.getElementById('content'),
+    autofocus: true,
+    spellChecker: false,
+    toolbar: [
+      'bold', 'italic', 'heading', '|',
+      'code', 'quote', 'unordered-list', 'ordered-list', '|',
+      'link', 'image', '|',
+      'preview', 'side-by-side', 'fullscreen', '|',
+      'guide'
+    ],
+    status: ['autosave', 'lines', 'words', 'cursor'],
+    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    minHeight: '400px',
+    placeholder: 'Write your content here...',
+    renderingConfig: {
+      singleLineBreaks: false,
+      codeSyntaxHighlighting: true,
     }
-    <div class="space-y-6">
-      <div>
-        <label for="title" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Title
-        </label>
-        <div class="mt-1">
-          <input type="text" name="title" id="title" required value={ getPostTitle(data) }
-            class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
-            placeholder="Post title" />
-        </div>
-      </div>
-      <div>
-        <label for="description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Description
-        </label>
-        <div class="mt-1">
-          <textarea id="description" name="description" rows="3"
-            class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
-            placeholder="A brief description of your post">
-            if data.Post != nil {
-            { data.Post.Description }
-            }
-          </textarea>
-        </div>
-      </div>
-      <div>
-        <label for="content" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Content
-        </label>
-        <div class="mt-1">
-          <textarea id="content" name="content" rows="20" required
-            class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white font-mono"
-            placeholder="Write your post content here...">
-            if data.Post != nil {
-            { data.Post.Content }
-            }
-          </textarea>
-        </div>
-        <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-          Write your post content using Markdown formatting.
-        </p>
-      </div>
-      <div>
-        <label for="cover_image" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Cover Image URL
-        </label>
-        <div class="mt-1">
-          <input type="url" name="cover_image" id="cover_image" value={ getPostCoverImage(data) }
-            class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-neutral-300 dark:border-neutral-600 rounded-md dark:bg-neutral-800 dark:text-white"
-            placeholder="https://example.com/image.jpg" />
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Tags
-        </label>
-        <div class="mt-2 space-y-2">
-          for _, tag := range data.Tags {
-          <div class="relative flex items-start">
-            <div class="flex items-center h-5">
-              <input id={ fmt.Sprintf("tag-%d", tag.ID) } name="tags[]" type="checkbox" value={ fmt.Sprintf("%d",
-                tag.ID) } checked?={ data.Post !=nil && hasTag(data.Post.Tags, tag) }
-                class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-neutral-300 dark:border-neutral-600 rounded" />
-            </div>
-            <div class="ml-3 text-sm">
-              <label for={ fmt.Sprintf("tag-%d", tag.ID) } class="text-neutral-700 dark:text-neutral-300">
-                { tag.Name }
-              </label>
-            </div>
-          </div>
-          }
-        </div>
-      </div>
-    </div>
-  </form>
-</div>
-}
+  });
+
+  // Handle dark mode toggle
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        const isDark = document.documentElement.classList.contains('dark');
+        easyMDE.updateTheme(isDark ? 'dark' : 'light');
+      }
+    });
+  });
+
+  observer.observe(document.documentElement, {
+    attributes: true
+  });
+
+  // Add custom styles for dark mode
+  const style = document.createElement('style');
+  style.textContent = `
+    .dark .EasyMDEContainer .CodeMirror {
+      background-color: rgb(38 38 38) !important;
+      color: #fff !important;
+      border-color: rgb(64 64 64) !important;
+    }
+    
+    .dark .editor-toolbar button {
+      color: #fff !important;
+    }
+    
+    .dark .editor-toolbar button:hover {
+      background-color: rgb(64 64 64) !important;
+    }
+
+    .dark .editor-toolbar {
+      border-color: rgb(64 64 64) !important;
+    }
+
+    .dark .EasyMDEContainer .CodeMirror-cursor {
+      border-color: #fff !important;
+    }
+
+    .dark .editor-preview {
+      background-color: rgb(38 38 38) !important;
+      color: #fff !important;
+    }
+
+    .dark .cm-s-easymde .CodeMirror-gutters {
+      background-color: rgb(38 38 38) !important;
+      border-right: 1px solid rgb(64 64 64) !important;
+    }
+
+    .dark .editor-toolbar.fullscreen {
+      background-color: rgb(38 38 38) !important;
+    }
+
+    .dark .editor-preview-side {
+      background-color: rgb(38 38 38) !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  function previewPost() {
+    const title = document.getElementById('title').value;
+    const content = document.getElementById('content').value;
+    const previewContent = document.getElementById('previewContent');
+
+    // Create preview content
+    previewContent.innerHTML = `
+      <h1>${title}</h1>
+      ${content}
+    `;
+
+    // Show preview modal
+    window.previewModal.showModal();
+  }
+</script>
+	}
 }
 
 // Helper functions to handle conditional logic outside the template
 func getEditorTitle(data PostEditorData) string {
-if data.IsNew {
-return "New Post"
-}
-return "Edit Post: " + data.Post.Title
+	if data.IsNew {
+		return "New Post"
+	}
+	return "Edit Post: " + data.Post.Title
 }
 
 func getFormAction(data PostEditorData) string {
-if data.IsNew {
-return "/admin/posts"
-}
-return fmt.Sprintf("/admin/posts/%d", data.Post.ID)
+	if data.IsNew {
+		return "/admin/posts"
+	}
+	return fmt.Sprintf("/admin/posts/%d", data.Post.ID)
 }
 
 func getPostTitle(data PostEditorData) string {
-if data.Post != nil {
-return data.Post.Title
-}
-return ""
+	if data.Post != nil {
+		return data.Post.Title
+	}
+	return ""
 }
 
 func getPostCoverImage(data PostEditorData) string {
-if data.Post != nil {
-return data.Post.CoverImage
-}
-return ""
+	if data.Post != nil {
+		return data.Post.CoverImage
+	}
+	return ""
 }
 
 // hasTag checks if a post has a specific tag
 func hasTag(postTags []models.Tag, tag models.Tag) bool {
-for _, t := range postTags {
-if t.ID == tag.ID {
-return true
-}
-}
-return false
+	for _, t := range postTags {
+		if t.ID == tag.ID {
+			return true
+		}
+	}
+	return false
 }
