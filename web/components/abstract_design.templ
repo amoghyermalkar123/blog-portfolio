@@ -1,0 +1,91 @@
+package components
+
+templ AbstractDesign() {
+<div x-data="abstractDesign()" x-init="init()" class="relative w-full h-96">
+  <canvas id="tech-canvas" x-ref="canvas" class="w-full h-full"></canvas>
+</div>
+<script>
+  function abstractDesign() {
+    return {
+      ctx: null,
+      particles: [],
+      animationId: null,
+
+      init() {
+        const canvas = this.$refs.canvas;
+        this.ctx = canvas.getContext('2d');
+
+        // Set canvas size with proper scaling
+        const setCanvasSize = () => {
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        };
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+
+        // Create particles
+        for (let i = 0; i < 30; i++) {
+          this.particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5
+          });
+        }
+
+        // Start the animation
+        this.animate();
+
+        // Cleanup
+        this.$cleanup = () => {
+          if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+          }
+          window.removeEventListener('resize', setCanvasSize);
+        };
+      },
+
+      animate() {
+        const canvas = this.$refs.canvas;
+        this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        this.particles.forEach((particle, i) => {
+          // Update position
+          particle.x += particle.speedX;
+          particle.y += particle.speedY;
+
+          // Bounce off walls
+          if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+          if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+
+          // Draw particle
+          this.ctx.beginPath();
+          this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          this.ctx.fillStyle = 'rgba(174, 217, 224, 0.6)';
+          this.ctx.fill();
+
+          // Connect particles within range
+          this.particles.slice(i + 1).forEach(otherParticle => {
+            const dx = particle.x - otherParticle.x;
+            const dy = particle.y - otherParticle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+              this.ctx.beginPath();
+              this.ctx.moveTo(particle.x, particle.y);
+              this.ctx.lineTo(otherParticle.x, otherParticle.y);
+              this.ctx.strokeStyle = `rgba(174, 217, 224, ${0.2 - distance / 500})`;
+              this.ctx.stroke();
+            }
+          });
+        });
+
+        // Continue animation
+        this.animationId = requestAnimationFrame(() => this.animate());
+      }
+    }
+  }
+</script>
+}

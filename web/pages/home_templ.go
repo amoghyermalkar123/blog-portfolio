@@ -10,6 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"blog-portfolio/internal/models"
+	"blog-portfolio/web/components"
 	"blog-portfolio/web/layouts"
 )
 
@@ -43,117 +44,111 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <section class=\"bg-gradient-to-b from-pastel-warmGray to-pastel-base dark:from-neutral-900 dark:to-neutral-800\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24\"><div class=\"text-center\"><div class=\"mb-8 flex justify-center\"><div class=\"w-24 h-24 rounded-full bg-gradient-to-r from-pastel-blue to-pastel-purple flex items-center justify-center\"><span class=\"text-4xl\">📚</span></div></div><h1 class=\"text-5xl font-bold text-neutral-800 dark:text-white mb-6 leading-tight\">Welcome to My Digital Garden</h1><p class=\"mt-4 text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed\">I write about software development and technology in a way that's easy to understand and enjoyable to read.</p><div class=\"mt-10 flex justify-center gap-6\"><a href=\"/blog\" class=\"rounded-lg bg-gradient-to-r from-pastel-blue to-pastel-purple px-6 py-3 text-neutral-800 font-medium hover:opacity-90 transition-all transform hover:scale-105\">Start Reading</a> <a href=\"/about\" class=\"rounded-lg bg-white dark:bg-neutral-800 px-6 py-3 text-neutral-800 dark:text-white font-medium hover:bg-pastel-yellow transition-all\">About Me</a></div></div></div></section> <section class=\"py-20 bg-pastel-base dark:bg-neutral-900\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex justify-between items-baseline mb-12\"><h2 class=\"text-3xl font-bold text-neutral-800 dark:text-white\">Latest Writings</h2><a href=\"/blog\" class=\"text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 transition-colors flex items-center gap-2\">View all posts <span class=\"text-lg\">→</span></a></div><div class=\"grid gap-8 md:grid-cols-2 lg:grid-cols-3\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"min-h-[90vh] flex items-center\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-0 items-center\"><div class=\"space-y-6 lg:pr-8\"><h1 class=\"text-4xl md:text-5xl font-bold text-white leading-tight\">Hi, I'm Amogh Yermalkar</h1><p class=\"text-lg text-neutral-400 leading-relaxed\">I'm a software engineer passionate about building elegant solutions to complex problems. My focus is on creating performant, scalable systems and sharing knowledge through writing.</p><div class=\"flex gap-4\"><a href=\"/blog\" class=\"px-6 py-3 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors\">Read My Blog</a> <a href=\"/about\" class=\"px-6 py-3 border border-neutral-800 text-white rounded-lg hover:bg-neutral-800 transition-colors\">About Me</a></div></div><div class=\"h-[500px] w-full relative mt-8 lg:mt-0\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			for _, post := range latestPosts {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"bg-pastel-paper dark:bg-neutral-800 rounded-xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if post.CoverImage != "" {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img src=\"")
+			templ_7745c5c3_Err = components.AbstractDesign().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section><section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Latest Posts</h2><p class=\"text-neutral-400 mb-12\">Thoughts, learnings, and insights from my journey.</p><div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if len(latestPosts) > 0 {
+				for _, post := range latestPosts {
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"bg-neutral-800 rounded-lg overflow-hidden\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var3 string
-					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(post.CoverImage)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 67, Col: 34}
+					if post.CoverImage != "" {
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img src=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var3 string
+						templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(post.CoverImage)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 49, Col: 34}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var4 string
+						templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 49, Col: 53}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full h-48 object-cover\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var4 string
-					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 67, Col: 53}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full h-48 object-cover\">")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-6\"><div class=\"flex gap-2 mb-3\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				for _, tag := range post.Tags {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"inline-block px-3 py-1 rounded-full text-xs bg-pastel-purple/20 text-neutral-700 dark:text-neutral-300\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-6\"><h3 class=\"text-xl font-bold text-white mb-2\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var5 string
-					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(tag.Name)
+					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 75, Col: 21}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 52, Col: 68}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><p class=\"text-neutral-400 mb-4 line-clamp-2\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var6 string
+					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(post.Description)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 53, Col: 74}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><a href=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var7 templ.SafeURL = templ.SafeURL("/blog/" + post.Slug)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var7)))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"text-neutral-300 hover:text-white transition-colors\">Read more →</a></div></article>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><h3 class=\"text-xl font-semibold text-neutral-800 dark:text-white mb-2\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var6 string
-				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 80, Col: 21}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><p class=\"text-neutral-600 dark:text-neutral-400 text-sm mb-4 line-clamp-2\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var7 string
-				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(post.Description)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 83, Col: 27}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><a href=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var8 templ.SafeURL = templ.SafeURL("/blog/" + post.Slug)
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var8)))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"text-neutral-800 dark:text-white font-medium hover:text-pastel-blue transition-colors\">Read more →</a></div></article>")
+			} else {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"col-span-full text-center py-12 bg-neutral-800 rounded-lg\"><p class=\"text-neutral-400\">No posts yet. Check back soon!</p></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			if len(latestPosts) == 0 {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"text-center py-12 text-neutral-600 dark:text-neutral-400 col-span-full\">No posts yet. Check back soon!</div>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></section><section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">GitHub Activity</h2><p class=\"text-neutral-400 mb-12\">A visual representation of my coding activity.</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></section> <section class=\"py-20 bg-pastel-warmGray dark:bg-neutral-800\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-neutral-800 dark:text-white text-center mb-12\">What I Write About</h2><div class=\"grid grid-cols-2 md:grid-cols-3 gap-6\"><div class=\"bg-gradient-to-br from-pastel-blue/50 to-pastel-purple/50 p-6 rounded-xl text-center\"><div class=\"text-3xl mb-3\">🚀</div><h3 class=\"font-medium text-neutral-800 dark:text-white\">Systems Programming</h3></div><div class=\"bg-gradient-to-br from-pastel-green/50 to-pastel-blue/50 p-6 rounded-xl text-center\"><div class=\"text-3xl mb-3\">⚡</div><h3 class=\"font-medium text-neutral-800 dark:text-white\">Performance</h3></div><div class=\"bg-gradient-to-br from-pastel-yellow/50 to-pastel-green/50 p-6 rounded-xl text-center\"><div class=\"text-3xl mb-3\">🛠️</div><h3 class=\"font-medium text-neutral-800 dark:text-white\">Tools & Tips</h3></div></div></div></section> <section class=\"py-20 bg-gradient-to-b from-pastel-base to-pastel-warmGray dark:from-neutral-900 dark:to-neutral-800\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"bg-white dark:bg-neutral-800 rounded-2xl p-8 md:p-12 shadow-sm\"><h2 class=\"text-2xl md:text-3xl font-bold text-neutral-800 dark:text-white text-center mb-4\">Stay Updated</h2><p class=\"text-neutral-600 dark:text-neutral-400 text-center max-w-2xl mx-auto mb-8\">Get notified when I publish new articles about systems programming, performance optimization, and more.</p><form class=\"max-w-md mx-auto flex gap-4\"><input type=\"email\" placeholder=\"Enter your email\" class=\"flex-1 rounded-lg border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900 focus:ring-pastel-blue focus:border-pastel-blue\"> <button type=\"submit\" class=\"px-6 py-2 bg-gradient-to-r from-pastel-purple to-pastel-blue text-neutral-800 rounded-lg hover:opacity-90 transition-opacity font-medium\">Subscribe</button></form></div></div></section>")
+			templ_7745c5c3_Err = components.GitHubHeatmap().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></section><!-- Work Experience Section --> <section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Work Experience</h2><p class=\"text-neutral-400 mb-12\">My professional journey through the tech landscape.</p><div class=\"relative\"><!-- Timeline line --><div class=\"absolute top-0 h-full w-px bg-emerald-500/20\" style=\"left: 110px;\"></div><!-- Latest Experience --><div class=\"relative mb-12 ml-[160px]\"><!-- Date and dot --><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2023 - Present</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><!-- Content --><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Senior Software Engineer</h3><div class=\"text-emerald-400\">Tech Company Inc.</div><p class=\"mt-2 text-neutral-400\">Led the development of scalable microservices architecture. Mentored junior developers and implemented best practices for code quality.</p></div></div><!-- Software Engineer --><div class=\"relative mb-12 ml-[160px]\"><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2020 - 2023</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Software Engineer</h3><div class=\"text-emerald-400\">Startup Co.</div><p class=\"mt-2 text-neutral-400\">Developed and maintained cloud-native applications. Implemented CI/CD pipelines and automated testing frameworks.</p></div></div><!-- Junior Developer --><div class=\"relative ml-[160px]\"><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2018 - 2020</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Junior Developer</h3><div class=\"text-emerald-400\">First Tech Ltd.</div><p class=\"mt-2 text-neutral-400\">Built and maintained web applications using modern JavaScript frameworks. Collaborated with design team for UI/UX improvements.</p></div></div></div></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
