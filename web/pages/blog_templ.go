@@ -97,8 +97,8 @@ func Blog(posts []*models.Post, currentPage int, activeTag string) templ.Compone
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = layouts.Base(layouts.PageData{
-			Title:       "Blog | My Portfolio",
-			Description: "Read my latest blog posts about technology and software development",
+			Title:       "Amogh's Eden",
+			Description: "Read my latest blog posts about anything that tickels my intellectual fancy",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

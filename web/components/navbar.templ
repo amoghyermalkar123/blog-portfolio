@@ -2,50 +2,62 @@
 package components
 
 type NavbarProps struct {
-IsAdmin bool
+	IsAdmin bool
 }
 
 templ Navbar(props NavbarProps) {
-<nav
-  class="bg-gradient-to-r from-pastel-base to-pastel-warmGray border-b border-pastel-warmGray/50 dark:from-neutral-800 dark:to-neutral-900 dark:border-neutral-700">
-  <div class="container mx-auto px-4">
-    <div class="flex justify-between h-16">
-      <div class="flex">
-        <div class="flex-shrink-0 flex items-center">
-          <a href="/" class="text-xl font-bold text-pastel-text dark:text-white font-mono">
-            Blog & Portfolio
-          </a>
-        </div>
-        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-          <a href="/"
-            class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text dark:text-white hover:text-neutral-800 dark:hover:text-white transition-colors duration-200">
-            Home
-          </a>
-          <a href="/blog"
-            class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text/80 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-white transition-colors duration-200">
-            Blog
-          </a>
-          <a href="/portfolio"
-            class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text/80 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-white transition-colors duration-200">
-            Portfolio
-          </a>
-        </div>
-      </div>
-      <div class="flex items-center space-x-4">
-        if props.IsAdmin {
-        <a href="/admin/dashboard"
-          class="inline-flex items-center px-3 py-1 text-sm font-medium bg-gradient-to-r from-pastel-blue to-pastel-purple text-pastel-text rounded-md hover:opacity-90 transition-opacity duration-200">
-          Admin Dashboard
-        </a>
-        }
-        <button type="button" x-data="{ darkMode: localStorage.theme === 'dark' }"
-          @click="darkMode = !darkMode; localStorage.theme = darkMode ? 'dark' : 'light'; document.documentElement.classList.toggle('dark')"
-          class="p-2 text-pastel-text/70 hover:text-pastel-text dark:text-neutral-400 dark:hover:text-white transition-colors duration-200">
-          <span x-show="!darkMode" class="w-5 h-5">🌙</span>
-          <span x-show="darkMode" class="w-5 h-5">☀️</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</nav>
+	<nav
+		class="bg-gradient-to-r from-pastel-base to-pastel-warmGray border-b border-pastel-warmGray/50 dark:from-neutral-800 dark:to-neutral-900 dark:border-neutral-700"
+	>
+		<div class="container mx-auto px-4">
+			<div class="flex justify-between h-16">
+				<div class="flex">
+					<div class="flex-shrink-0 flex items-center">
+						<a href="/" class="text-xl font-bold text-pastel-text dark:text-white font-mono">
+							Amogh's Eden
+						</a>
+					</div>
+					<div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+						<a
+							href="/"
+							class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text dark:text-white hover:text-neutral-800 dark:hover:text-white transition-colors duration-200"
+						>
+							Home
+						</a>
+						<a
+							href="/blog"
+							class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text/80 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-white transition-colors duration-200"
+						>
+							Blog
+						</a>
+						<a
+							href="/blog"
+							class="inline-flex items-center px-1 pt-1 text-sm font-medium text-pastel-text/80 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-white transition-colors duration-200"
+						>
+							What I'm Currently Working on
+						</a>
+					</div>
+				</div>
+				<div class="flex items-center space-x-4">
+					if props.IsAdmin {
+						<a
+							href="/admin/dashboard"
+							class="inline-flex items-center px-3 py-1 text-sm font-medium bg-gradient-to-r from-pastel-blue to-pastel-purple text-pastel-text rounded-md hover:opacity-90 transition-opacity duration-200"
+						>
+							Admin Dashboard
+						</a>
+					}
+					<!-- <button -->
+					<!-- 	type="button" -->
+					<!-- 	x-data="{ darkMode: localStorage.theme === 'dark' }" -->
+					<!-- 	@click="darkMode = !darkMode; localStorage.theme = darkMode ? 'dark' : 'light'; document.documentElement.classList.toggle('dark')" -->
+					<!-- 	class="p-2 text-pastel-text/70 hover:text-pastel-text dark:text-neutral-400 dark:hover:text-white transition-colors duration-200" -->
+					<!-- > -->
+					<!-- 	<span x-show="!darkMode" class="w-5 h-5">🌙</span> -->
+					<!-- 	<span x-show="darkMode" class="w-5 h-5">☀️</span> -->
+					<!-- </button> -->
+				</div>
+			</div>
+		</div>
+	</nav>
 }

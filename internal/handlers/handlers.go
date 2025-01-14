@@ -63,7 +63,7 @@ func (h *Handlers) Home() http.HandlerFunc {
 
 		// Pass data to template
 		if err := pages.Home(layouts.PageData{
-			Title:       "Home | Blog & Portfolio",
+			Title:       "Amogh's Eden",
 			Description: "Welcome to my personal blog and portfolio",
 			IsAdmin:     middleware.IsAdmin(r),
 		}, latestPosts).Render(ctx, w); err != nil {

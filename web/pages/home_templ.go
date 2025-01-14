@@ -44,7 +44,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"min-h-[90vh] flex items-center\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-0 items-center\"><div class=\"space-y-6 lg:pr-8\"><h1 class=\"text-4xl md:text-5xl font-bold text-white leading-tight\">Hi, I'm Amogh Yermalkar</h1><p class=\"text-lg text-neutral-400 leading-relaxed\">I'm a software engineer passionate about building elegant solutions to complex problems. My focus is on creating performant, scalable systems and sharing knowledge through writing.</p><div class=\"flex gap-4\"><a href=\"/blog\" class=\"px-6 py-3 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors\">Read My Blog</a> <a href=\"/about\" class=\"px-6 py-3 border border-neutral-800 text-white rounded-lg hover:bg-neutral-800 transition-colors\">About Me</a></div></div><div class=\"h-[500px] w-full relative mt-8 lg:mt-0\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <section class=\"min-h-[90vh] flex items-center\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-0 items-center\"><div class=\"space-y-6 lg:pr-8\"><h1 class=\"text-4xl md:text-5xl font-bold text-white leading-tight\">Hi, I'm Amogh Yermalkar</h1><p class=\"text-lg text-neutral-400 leading-relaxed\">Welcome to my Eden of Knowledge. I write about Systems, Math, Engineering, etc. I'm a SWE for about 4 years now. I bring food to the table writing Go and happiness writing Zig.</p><div class=\"flex gap-4\"><a href=\"/blog\" class=\"px-6 py-3 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors\">Read My Blog</a> <a href=\"/about\" class=\"px-6 py-3 border border-neutral-800 text-white rounded-lg hover:bg-neutral-800 transition-colors\">About Me</a></div></div><div class=\"h-[500px] w-full relative mt-8 lg:mt-0\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -52,7 +52,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section><section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Latest Posts</h2><p class=\"text-neutral-400 mb-12\">Thoughts, learnings, and insights from my journey.</p><div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section> <section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Latest Posts</h2><p class=\"text-neutral-400 mb-12\">Thoughts, learnings, and insights from my journey.</p><div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -70,7 +70,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 						var templ_7745c5c3_Var3 string
 						templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(post.CoverImage)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 49, Col: 34}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 53, Col: 35}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 						if templ_7745c5c3_Err != nil {
@@ -83,7 +83,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 						var templ_7745c5c3_Var4 string
 						templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 49, Col: 53}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 53, Col: 54}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 						if templ_7745c5c3_Err != nil {
@@ -101,7 +101,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 52, Col: 68}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 56, Col: 67}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(post.Description)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 53, Col: 74}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/pages/home.templ`, Line: 57, Col: 73}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
@@ -140,7 +140,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></section><section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">GitHub Activity</h2><p class=\"text-neutral-400 mb-12\">A visual representation of my coding activity.</p>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></section> <section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">GitHub Activity</h2><p class=\"text-neutral-400 mb-12\">A visual representation of my coding activity.</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -148,7 +148,7 @@ func Home(data layouts.PageData, latestPosts []*models.Post) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></section><!-- Work Experience Section --> <section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Work Experience</h2><p class=\"text-neutral-400 mb-12\">My professional journey through the tech landscape.</p><div class=\"relative\"><!-- Timeline line --><div class=\"absolute top-0 h-full w-px bg-emerald-500/20\" style=\"left: 110px;\"></div><!-- Latest Experience --><div class=\"relative mb-12 ml-[160px]\"><!-- Date and dot --><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2023 - Present</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><!-- Content --><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Senior Software Engineer</h3><div class=\"text-emerald-400\">Tech Company Inc.</div><p class=\"mt-2 text-neutral-400\">Led the development of scalable microservices architecture. Mentored junior developers and implemented best practices for code quality.</p></div></div><!-- Software Engineer --><div class=\"relative mb-12 ml-[160px]\"><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2020 - 2023</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Software Engineer</h3><div class=\"text-emerald-400\">Startup Co.</div><p class=\"mt-2 text-neutral-400\">Developed and maintained cloud-native applications. Implemented CI/CD pipelines and automated testing frameworks.</p></div></div><!-- Junior Developer --><div class=\"relative ml-[160px]\"><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">2018 - 2020</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Junior Developer</h3><div class=\"text-emerald-400\">First Tech Ltd.</div><p class=\"mt-2 text-neutral-400\">Built and maintained web applications using modern JavaScript frameworks. Collaborated with design team for UI/UX improvements.</p></div></div></div></div></section>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></section> <!-- Work Experience Section --> <section class=\"py-20\"><div class=\"container mx-auto px-4 sm:px-6 lg:px-8\"><h2 class=\"text-3xl font-bold text-white mb-3\">Work Experience</h2><p class=\"text-neutral-400 mb-12\">My professional journey through the tech landscape.</p><div class=\"relative\"><!-- Timeline line --><div class=\"absolute top-0 h-full w-px bg-emerald-500/20\" style=\"left: 110px;\"></div><!-- Latest Experience --><div class=\"relative mb-12 ml-[160px]\"><!-- Date and dot --><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">Jan 2023 - Present</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><!-- Content --><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Senior Software Engineer 1</h3><div class=\"text-emerald-400\">Connectwise Pvt Ltd</div><p class=\"mt-2 text-neutral-400\">Led the development of the token issuing architecture. Worked on RBAC and ReBAC design improvements.</p></div></div><!-- Software Engineer --><div class=\"relative mb-12 ml-[160px]\"><div class=\"absolute left-[-160px] flex items-center\"><span class=\"text-sm text-emerald-500 w-24 text-right\">May 2021 - Jan 2023</span><div class=\"w-5 h-5 rounded-full border-4 border-emerald-500 bg-[#0f1117] ml-8\"></div></div><div class=\"ml-12\"><h3 class=\"text-xl font-bold text-white\">Software Engineer</h3><div class=\"text-emerald-400\">Zee Entertainment Enterprises Limited</div><p class=\"mt-2 text-neutral-400\">Bro i was the org</p></div></div></div></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
