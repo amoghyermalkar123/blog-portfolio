@@ -3,7 +3,7 @@ package layouts
 
 templ Admin(data PageData) {
 	<!DOCTYPE html>
-	<html lang="en" class="h-full">
+	<html lang="en" class="h-full dark">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -73,17 +73,18 @@ templ Admin(data PageData) {
 								</svg>
 							</button>
 							<div class="flex items-center">
-								<button
-									type="button"
-									x-data="{ darkMode: localStorage.theme === 'dark' }"
-									@click="darkMode = !darkMode; localStorage.theme = darkMode ? 'dark' : 'light'; document.documentElement.classList.toggle('dark')"
-									class="p-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
-								>
-									<span x-show="!darkMode" class="w-5 h-5">🌙</span>
-									<span x-show="darkMode" class="w-5 h-5">☀️</span>
-								</button>
+								<!-- <button -->
+								<!-- 	type="button" -->
+								<!-- 	x-data="{ darkMode: localStorage.theme === 'dark' }" -->
+								<!-- 	@click="darkMode = !darkMode; localStorage.theme = darkMode ? 'dark' : 'light'; document.documentElement.classList.toggle('dark')" -->
+								<!-- 	class="p-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white" -->
+								<!-- > -->
+								<!-- 	<span x-show="!darkMode" class="w-5 h-5">🌙</span> -->
+								<!-- 	<span x-show="darkMode" class="w-5 h-5">☀️</span> -->
+								<!-- </button> -->
 								<a
 									href="/"
+									target="blank"
 									class="ml-4 text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
 								>
 									View Site

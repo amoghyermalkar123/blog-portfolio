@@ -88,7 +88,7 @@ func (router *Router) setupRoutes() {
 	// Admin routes - protected by RequireAuth middleware
 	r.Route("/admin", func(r chi.Router) {
 		r.Use(custommw.RequireAuth)
-
+		r.Post("/preview", router.handlers.Admin().HandlePreview())
 		// Dashboard
 		r.Get("/dashboard", router.handlers.Admin().ShowDashboard())
 

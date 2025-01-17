@@ -295,19 +295,59 @@ templ PostEditor(data PostEditorData) {
   document.head.appendChild(style);
 
   function previewPost() {
-    const title = document.getElementById('title').value;
-    const content = document.getElementById('content').value;
-    const previewContent = document.getElementById('previewContent');
+    // Get form data
+    const form = document.getElementById('post-form');
 
-    // Create preview content
-    previewContent.innerHTML = `
-      <h1>${title}</h1>
-      ${content}
-    `;
+    // Create a temporary form for the preview
+    const previewForm = document.createElement('form');
+    previewForm.method = 'POST';
+    previewForm.action = '/admin/preview';
+    previewForm.style.display = 'none';
 
-    // Show preview modal
-    window.previewModal.showModal();
+    // Add title
+    const titleInput = document.createElement('input');
+    titleInput.type = 'hidden';
+    titleInput.name = 'title';
+    titleInput.value = document.getElementById('title').value;
+    previewForm.appendChild(titleInput);
+
+    // Add description
+    const descInput = document.createElement('input');
+    descInput.type = 'hidden';
+    descInput.name = 'description';
+    descInput.value = document.getElementById('description').value;
+    previewForm.appendChild(descInput);
+
+    // Add cover image if it exists
+    const coverInput = document.createElement('input');
+    coverInput.type = 'hidden';
+    coverInput.name = 'cover_image';
+    coverInput.value = document.getElementById('cover_image').value;
+    previewForm.appendChild(coverInput);
+
+    // Add content from the editor
+    const contentInput = document.createElement('input');
+    contentInput.type = 'hidden';
+    contentInput.name = 'content';
+    contentInput.value = easyMDE.value();
+    previewForm.appendChild(contentInput);
+
+    // Add any selected tags
+    const selectedTags = document.querySelectorAll('input[name="tags[]"]:checked');
+    selectedTags.forEach(tag => {
+      const tagInput = document.createElement('input');
+      tagInput.type = 'hidden';
+      tagInput.name = 'tags[]';
+      tagInput.value = tag.value;
+      previewForm.appendChild(tagInput);
+    });
+
+    // Submit form
+    document.body.appendChild(previewForm);
+    previewForm.submit();
+    document.body.removeChild(previewForm);
   }
+
 </script>
 	}
 }

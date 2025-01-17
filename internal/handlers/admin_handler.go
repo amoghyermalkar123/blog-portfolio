@@ -5,6 +5,7 @@ import (
 	"blog-portfolio/internal/logger"
 	"blog-portfolio/internal/models"
 	"blog-portfolio/internal/service"
+	"blog-portfolio/internal/utils"
 	"blog-portfolio/web/pages/admin"
 	"net/http"
 	"strconv"
@@ -16,12 +17,14 @@ import (
 type AdminHandlers struct {
 	logger *logger.Logger
 	posts  *service.PostService
+	tags   *service.TagService
 }
 
-func NewAdminHandlers(logger *logger.Logger, postService *service.PostService) *AdminHandlers {
+func NewAdminHandlers(logger *logger.Logger, postService *service.PostService, tagService *service.TagService) *AdminHandlers {
 	return &AdminHandlers{
 		logger: logger,
 		posts:  postService,
+		tags:   tagService,
 	}
 }
 
@@ -347,5 +350,74 @@ func (h *AdminHandlers) HandleDeletePost() http.HandlerFunc {
 
 		// Return 200 OK - HTMX will handle removing the element from the DOM
 		w.WriteHeader(http.StatusOK)
+	}
+}
+
+// Inside internal/handlers/admin_handler.go
+
+// Inside internal/handlers/admin_handler.go
+
+// Inside internal/handlers/admin_handler.go
+
+func (h *AdminHandlers) HandlePreview() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := r.ParseForm(); err != nil {
+			h.logger.Error("Error parsing form:", err)
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		// Debug log the form values
+		h.logger.Info("Preview form values:",
+			"title:", r.FormValue("title"),
+			"description:", r.FormValue("description"),
+			"content:", "content length: "+strconv.Itoa(len(r.FormValue("content"))))
+
+		// Create a temporary post from form data
+		now := time.Now()
+		post := &models.Post{
+			Title:       r.FormValue("title"),
+			Content:     r.FormValue("content"),
+			Description: r.FormValue("description"),
+			CoverImage:  r.FormValue("cover_image"),
+			CreatedAt:   now,
+			UpdatedAt:   now,
+			PublishedAt: &now, // Add this for preview
+		}
+
+		// Parse tags if present
+		var tags []models.Tag
+		for _, idStr := range r.Form["tags[]"] {
+			id, err := strconv.ParseInt(idStr, 10, 64)
+			if err != nil {
+				continue
+			}
+			tag, err := h.tags.GetTagByID(r.Context(), id)
+			if err != nil {
+				continue
+			}
+			if tag != nil {
+				tags = append(tags, *tag)
+			}
+		}
+		post.Tags = tags
+
+		// Calculate reading time
+		post.ReadingTime = utils.CalculateReadingTime(post.Content)
+
+		// Debug log the post object
+		h.logger.Info("Preview post object:",
+			"title:", post.Title,
+			"hasDescription:", post.Description != "",
+			"contentLength:", len(post.Content))
+
+		// Render preview page
+		err := admin.Preview(admin.PreviewData{
+			Post: post,
+		}).Render(r.Context(), w)
+		if err != nil {
+			h.logger.Error("Error rendering preview:", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 	}
 }

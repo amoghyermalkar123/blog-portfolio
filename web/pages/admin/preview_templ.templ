@@ -1,0 +1,89 @@
+package admin
+
+import (
+	"blog-portfolio/internal/models"
+	"blog-portfolio/web/layouts"
+	"fmt"
+	"time"
+)
+
+type PreviewData struct {
+	Post *models.Post
+}
+
+templ Preview(data PreviewData) {
+	@layouts.Base(layouts.PageData{
+		Title:       "Preview: " + data.Post.Title,
+		Description: data.Post.Description,
+		IsAdmin:     true,
+	}) {
+		<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+			// Back button
+			<div class="mb-8">
+				<a
+					href="javascript:history.back()"
+					class="inline-flex items-center text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4 mr-1"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+					</svg>
+					Back to editor
+				</a>
+			</div>
+			// Preview banner
+			<div class="mb-8 bg-blue-50 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+				<p class="text-sm text-blue-700 dark:text-blue-300">
+					Preview Mode - This is how your post will look when published
+				</p>
+			</div>
+			<header class="mb-12">
+				// Title
+				<h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
+					{ data.Post.Title }
+				</h1>
+				// Post metadata
+				<div class="flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+					<time datetime={ time.Now().Format("2006-01-02") }>
+						{ time.Now().Format("January 2, 2006") }
+					</time>
+					<span>•</span>
+					<span>{ fmt.Sprintf("%d min read", data.Post.ReadingTime) }</span>
+					if len(data.Post.Tags) > 0 {
+						<span>•</span>
+						<div class="flex flex-wrap gap-2">
+							for _, tag := range data.Post.Tags {
+								<span
+									class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-800 dark:text-primary-100"
+								>
+									{ tag.Name }
+								</span>
+							}
+						</div>
+					}
+				</div>
+				// Description
+				if data.Post.Description != "" {
+					<div class="text-lg text-neutral-600 dark:text-neutral-300 border-l-4 border-primary-500 pl-4 italic">
+						{ data.Post.Description }
+					</div>
+				}
+				// Cover image if exists
+				if data.Post.CoverImage != "" {
+					<div class="mt-8">
+						<img src={ data.Post.CoverImage } alt={ data.Post.Title } class="w-full h-auto rounded-lg shadow-lg object-cover"/>
+					</div>
+				}
+			</header>
+			// Post content
+			<div class="prose dark:prose-invert max-w-none">
+				@templ.Raw(data.Post.ParsedContent())
+			</div>
+		</article>
+	}
+}

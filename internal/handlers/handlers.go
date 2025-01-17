@@ -25,7 +25,7 @@ func New(logger *logger.Logger, postService *service.PostService, tagService *se
 		logger:      logger,
 		posts:       NewPostHandlers(postService, logger),
 		auth:        NewAuthHandlers(logger),
-		admin:       NewAdminHandlers(logger, postService),
+		admin:       NewAdminHandlers(logger, postService, tagService), // Pass tagService here
 		postService: postService,
 	}
 }
